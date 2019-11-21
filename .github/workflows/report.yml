@@ -1,0 +1,49 @@
+name: Report
+
+on:
+  schedule:
+  - cron: '0 21 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.6
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - name: Clone the prarxivate repo
+      run: |
+        git clone https://github.com/GzuPark/prarxivate.git
+        cp automation.py prarxivate/automation.py
+    - name: Install python packages
+      run: |
+        cd prarxivate
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install dropbox
+    - name: Download db from dropbox
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        DB_PATH: ${{ secrets.DB_PATH }}
+        REPORT_PATH: ${{ secrets.REPORT_PATH }}
+      run: |
+        cd prarxivate
+        python -c 'from automation import download_db; download_db();'
+    - name: Make reports
+      run: |
+        cd prarxivate
+        export DATE=$(date "+%Y-%m-%d" -d "-1 days")
+        python make_report.py -d $DATE -nbs 2
+        python make_report.py -d $DATE -nbs 2 -c cs.CV
+        python make_report.py -d $DATE -nbs 2 -c cs.CV+cs.RO
+    - name: Upload reports to dropbox
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        DB_PATH: ${{ secrets.DB_PATH }}
+        REPORT_PATH: ${{ secrets.REPORT_PATH }}
+      run: |
+        cd prarxivate
+        python -c 'from automation import upload_report; upload_report();'
