@@ -1,4 +1,4 @@
-name: Fetch
+name: Fetch Daily
 
 on:
   schedule:
@@ -32,10 +32,10 @@ jobs:
       run: |
         cd prarxivate
         python -c 'from automation import download_db; download_db();'
-    - name: Fetch 500 papers from arXiv
+    - name: Fetch 300 papers from arXiv
       run: |
         cd prarxivate
-        python fetch_papers.py -mi 500
+        python fetch_papers.py -mi 300 -break 0 -sq cat:cs.CV+OR+cat:cs.RO+OR+cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.NE+OR+cat:stat.ML
     - name: Upload db to dropbox
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
