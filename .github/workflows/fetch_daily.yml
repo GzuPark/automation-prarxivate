@@ -14,15 +14,14 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.6
-    - name: Clone the prarxivate repo
+    - name: Submodule init
       run: |
-        git clone https://github.com/GzuPark/prarxivate.git
-        cp automation.py prarxivate/automation.py
+        git submodule init
+        git submodule update
     - name: Install python packages
       run: |
-        cd prarxivate
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r prarxivate/requirements.txt
         pip install dropbox
     - name: Download db from dropbox
       env:
@@ -30,17 +29,14 @@ jobs:
         DB_PATH: ${{ secrets.DB_PATH }}
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
-        cd prarxivate
         python -c 'from automation import download_db; download_db();'
-    - name: Fetch 300 papers from arXiv
+    - name: Fetch 1000 papers from arXiv
       run: |
-        cd prarxivate
-        python fetch_papers.py -mi 300 -break 0 -sq cat:cs.CV+OR+cat:cs.RO+OR+cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.NE+OR+cat:stat.ML
+        python prarxivate/fetch_papers.py -mi 1000 -break 0 -sq cat:cs.CV+OR+cat:cs.RO+OR+cat:cs.AI+OR+cat:cs.LG+OR+cat:cs.CL+OR+cat:cs.NE+OR+cat:stat.ML
     - name: Upload db to dropbox
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         DB_PATH: ${{ secrets.DB_PATH }}
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
-        cd prarxivate
         python -c 'from automation import upload_db; upload_db();'

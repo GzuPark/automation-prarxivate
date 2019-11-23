@@ -14,15 +14,14 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: 3.6
-    - name: Clone the prarxivate repo
+    - name: Submodule init
       run: |
-        git clone https://github.com/GzuPark/prarxivate.git
-        cp automation.py prarxivate/automation.py
+        git submodule init
+        git submodule update
     - name: Install python packages
       run: |
-        cd prarxivate
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r prarxivate/requirements.txt
         pip install dropbox
     - name: Download db from dropbox
       env:
@@ -30,7 +29,6 @@ jobs:
         DB_PATH: ${{ secrets.DB_PATH }}
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
-        cd prarxivate
         python -c 'from automation import download_db; download_db();'
     - name: Make reports
       run: |
@@ -45,5 +43,4 @@ jobs:
         DB_PATH: ${{ secrets.DB_PATH }}
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
-        cd prarxivate
         python -c 'from automation import upload_report; upload_report();'
