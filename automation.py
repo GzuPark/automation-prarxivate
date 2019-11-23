@@ -4,7 +4,7 @@ import time
 
 import dropbox
 
-from utils import Config
+from prarxivate.utils import Config
 
 
 def get_envs():
