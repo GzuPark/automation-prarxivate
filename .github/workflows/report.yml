@@ -30,7 +30,11 @@ jobs:
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
         python -c 'from automation import download_db; download_db();'
-    - name: Make reports
+    - name: Make reports & Upload reports to dropbox
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        DB_PATH: ${{ secrets.DB_PATH }}
+        REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
         export DATE3=$(date "+%Y-%m-%d" -d "-3 days")
         export DATE2=$(date "+%Y-%m-%d" -d "-2 days")
@@ -38,16 +42,12 @@ jobs:
         python prarxivate/make_report.py -d $DATE3 -nbs 2
         python prarxivate/make_report.py -d $DATE3 -nbs 2 -c cs.CV
         python prarxivate/make_report.py -d $DATE3 -nbs 2 -c cs.CV+cs.RO
+        python -c 'from automation import upload_report; upload_report();'
         python prarxivate/make_report.py -d $DATE2 -nbs 2
         python prarxivate/make_report.py -d $DATE2 -nbs 2 -c cs.CV
         python prarxivate/make_report.py -d $DATE2 -nbs 2 -c cs.CV+cs.RO
+        python -c 'from automation import upload_report; upload_report();'
         python prarxivate/make_report.py -d $DATE1 -nbs 2
         python prarxivate/make_report.py -d $DATE1 -nbs 2 -c cs.CV
         python prarxivate/make_report.py -d $DATE1 -nbs 2 -c cs.CV+cs.RO
-    - name: Upload reports to dropbox
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        DB_PATH: ${{ secrets.DB_PATH }}
-        REPORT_PATH: ${{ secrets.REPORT_PATH }}
-      run: |
         python -c 'from automation import upload_report; upload_report();'
