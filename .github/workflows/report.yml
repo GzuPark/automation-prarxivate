@@ -32,11 +32,18 @@ jobs:
         python -c 'from automation import download_db; download_db();'
     - name: Make reports
       run: |
-        cd prarxivate
-        export DATE=$(date "+%Y-%m-%d" -d "-1 days")
-        python make_report.py -d $DATE -nbs 2
-        python make_report.py -d $DATE -nbs 2 -c cs.CV
-        python make_report.py -d $DATE -nbs 2 -c cs.CV+cs.RO
+        export DATE3=$(date "+%Y-%m-%d" -d "-3 days")
+        export DATE2=$(date "+%Y-%m-%d" -d "-2 days")
+        export DATE1=$(date "+%Y-%m-%d" -d "-1 days")
+        python prarxivate/make_report.py -d $DATE3 -nbs 2
+        python prarxivate/make_report.py -d $DATE3 -nbs 2 -c cs.CV
+        python prarxivate/make_report.py -d $DATE3 -nbs 2 -c cs.CV+cs.RO
+        python prarxivate/make_report.py -d $DATE2 -nbs 2
+        python prarxivate/make_report.py -d $DATE2 -nbs 2 -c cs.CV
+        python prarxivate/make_report.py -d $DATE2 -nbs 2 -c cs.CV+cs.RO
+        python prarxivate/make_report.py -d $DATE1 -nbs 2
+        python prarxivate/make_report.py -d $DATE1 -nbs 2 -c cs.CV
+        python prarxivate/make_report.py -d $DATE1 -nbs 2 -c cs.CV+cs.RO
     - name: Upload reports to dropbox
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
