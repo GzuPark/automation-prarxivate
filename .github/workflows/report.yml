@@ -2,7 +2,7 @@ name: Report
 
 on:
   schedule:
-  - cron: '0 21 * * *'
+  - cron: '0 21 * * 1-6'
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
     - name: Submodule init
       run: |
         git submodule init
-        git submodule update
+        git submodule update --remote --merge
     - name: Install python packages
       run: |
         python -m pip install --upgrade pip
@@ -36,18 +36,9 @@ jobs:
         DB_PATH: ${{ secrets.DB_PATH }}
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
-        export DATE3=$(date "+%Y-%m-%d" -d "-3 days")
-        export DATE2=$(date "+%Y-%m-%d" -d "-2 days")
-        export DATE1=$(date "+%Y-%m-%d" -d "-1 days")
-        python prarxivate/make_report.py -d $DATE3 -nbs 2
-        python prarxivate/make_report.py -d $DATE3 -nbs 2 -c cs.CV
-        python prarxivate/make_report.py -d $DATE3 -nbs 2 -c cs.CV+cs.RO
-        python -c 'from automation import upload_report; upload_report();'
-        python prarxivate/make_report.py -d $DATE2 -nbs 2
-        python prarxivate/make_report.py -d $DATE2 -nbs 2 -c cs.CV
-        python prarxivate/make_report.py -d $DATE2 -nbs 2 -c cs.CV+cs.RO
-        python -c 'from automation import upload_report; upload_report();'
-        python prarxivate/make_report.py -d $DATE1 -nbs 2
-        python prarxivate/make_report.py -d $DATE1 -nbs 2 -c cs.CV
-        python prarxivate/make_report.py -d $DATE1 -nbs 2 -c cs.CV+cs.RO
+        export FROM_DATE=$(date "+%Y-%m-%d" -d "-1 days")
+        export TO_DATE=$(date "+%Y-%m-%d" -d "-3 days")
+        python prarxivate/make_report.py -d "'$FROM_DATE $TO_DATE'" -ds u
+        python prarxivate/make_report.py -d "'$FROM_DATE $TO_DATE'" -ds u -c cs.CV
+        python prarxivate/make_report.py -d "'$FROM_DATE $TO_DATE'" -ds u -c cs.CV+cs.RO
         python -c 'from automation import upload_report; upload_report();'

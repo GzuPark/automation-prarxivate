@@ -2,7 +2,7 @@ name: Fetch Weekly
 
 on:
   schedule:
-  - cron: '0 1,13 * * 6'
+  - cron: '0 1/12 * * 6'
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
     - name: Submodule init
       run: |
         git submodule init
-        git submodule update
+        git submodule update --remote --merge
     - name: Install python packages
       run: |
         python -m pip install --upgrade pip
