@@ -2,7 +2,7 @@ name: Report
 
 on:
   schedule:
-  - cron: '0 21 * * 1-6'
+  - cron: '0 23 * * 1-6'
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
       run: |
         export FROM_DATE=$(date "+%Y-%m-%d" -d "-1 days")
         export TO_DATE=$(date "+%Y-%m-%d" -d "-3 days")
-        python prarxivate/make_report.py -d "'$FROM_DATE $TO_DATE'" -ds u
-        python prarxivate/make_report.py -d "'$FROM_DATE $TO_DATE'" -ds u -c cs.CV
-        python prarxivate/make_report.py -d "'$FROM_DATE $TO_DATE'" -ds u -c cs.CV+cs.RO
+        python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u
+        python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u -c cs.CV
+        python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u -c cs.CV+cs.RO
         python -c 'from automation import upload_report; upload_report();'
