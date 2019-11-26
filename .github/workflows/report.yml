@@ -2,7 +2,7 @@ name: Report
 
 on:
   schedule:
-  - cron: '0 23 * * 1-6'
+  - cron: '0 3 * * 0-5'
 
 jobs:
   build:
@@ -37,7 +37,7 @@ jobs:
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
       run: |
         export FROM_DATE=$(date "+%Y-%m-%d" -d "-1 days")
-        export TO_DATE=$(date "+%Y-%m-%d" -d "-3 days")
+        export TO_DATE=$(date "+%Y-%m-%d" -d "-4 days")
         python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u
         python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u -c cs.CV
         python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u -c cs.CV+cs.RO
