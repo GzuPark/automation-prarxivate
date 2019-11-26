@@ -2,7 +2,7 @@ name: Report
 
 on:
   schedule:
-  - cron: '20 5 * * 0-5'
+  - cron: '0 21 * * 0-5'
 
 jobs:
   build:
