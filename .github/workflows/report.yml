@@ -2,7 +2,7 @@ name: Report
 
 on:
   schedule:
-  - cron: '0 21 * * 0-5'
+  - cron: '0 21 * * *'
 
 jobs:
   build:
@@ -35,12 +35,17 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         DB_PATH: ${{ secrets.DB_PATH }}
         REPORT_PATH: ${{ secrets.REPORT_PATH }}
+        EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        EMAIL_RECEIVER1: ${{ secrets.EMAIL_RECEIVER1 }}
+        EMAIL_RECEIVER2: ${{ secrets.EMAIL_RECEIVER2 }}
       run: |
         export FROM_DATE=$(date "+%Y-%m-%d")
         echo "Start $FROM_DATE"
         export TO_DATE=$(date "+%Y-%m-%d" -d "-4 days")
-        echo "To $FROM_DATE"
+        echo "To $TO_DATE"
         python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u
+        python send_email.py -id $EMAIL_SENDER -pw $EMAIL_PASSWORD -to $EMAIL_RECEIVER2
         python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u -c cs.CV
         python prarxivate/make_report.py -d "$FROM_DATE $TO_DATE" -ds u -c cs.CV+cs.RO
         python -c 'from automation import upload_report; upload_report();'
